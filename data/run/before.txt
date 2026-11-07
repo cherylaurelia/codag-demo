@@ -1,0 +1,3 @@
+$ codag-log-mcp setup --log-file postgres-docker.log --client claude
+Checking your log file...
+Error: "postgres-docker.log: missing timestamp column"

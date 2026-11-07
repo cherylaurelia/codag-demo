@@ -1,0 +1,10 @@
+$ node cli/codag-convert.ts postgres-docker.log postgres-docker.codag.csv postgres
+docker-timestamps: 1996 rows, time units iso-8601, 0 skipped
+Next: codag-log-mcp setup --log-file postgres-docker.codag.csv
+$ codag-log-mcp setup --log-file postgres-docker.codag.csv --client claude
+Checking your log file...
+Dataset service-logs: 1996 records
+Time range (Unix seconds, UTC): 1794062663 to 1794063001
+Client presets saved in ./.codag
+Registration command: 'claude' 'mcp' 'add' '--transport' 'stdio' '--scope' 'user' 'codag-logs' '--' 'codag-log-mcp' 'postgres-docker.codag.csv' 'service-logs'
+Run that command when ready. Your existing agent supplies model access.

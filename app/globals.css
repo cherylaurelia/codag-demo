@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* Colors from codag.ai/theme.css (dark default) */
+@theme {
+  --color-bg: #282828;
+  --color-deep: #1d2021;
+  --color-fg: #ebdbb2;
+  --color-soft: #d5c4a1;
+  --color-muted: #bdae93;
+  --color-faint: #a89984;
+  --color-line: rgba(235, 219, 178, 0.12);
+  --color-accent: #8ec07c;
+  --color-accent-light: #b8bb26;
+  --color-pink: #d3869b;
+  --color-bad: #fb4934;
+  --color-warn: #fabd2f;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-mono: var(--font-b612), ui-monospace, monospace;
+  --font-sans: var(--font-hanken), system-ui, sans-serif;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+}

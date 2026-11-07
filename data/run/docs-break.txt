@@ -1,0 +1,10 @@
+$ curl -fsSL https://codag.ai/install.sh | sh
+Installing Codag log MCP 0.1.0 (darwin/arm64)...
+codag-log-mcp 0.1.0 (source 353957d601db88de17c54f400df82867272a6561)
+Installed ~/.local/bin/codag-log-mcp
+Connect your logs and agent with: ~/.local/bin/codag-log-mcp setup
+Your agent handles model access; Codag needs no separate API key.
+$ codag setup
+zsh:1: command not found: codag
+$ codag-log-mcp status
+Error: Os { code: 2, kind: NotFound, message: "No such file or directory" }
