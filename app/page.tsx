@@ -56,7 +56,7 @@ export default function Page() {
     <main className="mx-auto max-w-5xl px-5 sm:px-8">
       <header className="flex items-center justify-between py-6 font-mono text-sm">
         <span className="font-serif text-2xl text-fg">
-          codag <span className="font-mono text-sm text-muted">log MCP</span>
+          codag <span className="font-mono text-sm text-muted">log MCP · unofficial</span>
           <span className="hidden font-mono text-sm text-muted sm:inline"> · bring your logs</span>
         </span>
         <a href={REPO} className="rounded border border-line px-3 py-1.5 text-fg hover:border-accent">
@@ -71,7 +71,7 @@ export default function Page() {
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-soft">
           <strong className="text-fg">Problem:</strong> <code className="font-mono">codag-log-mcp setup</code> opens
-          two exact CSV headers and doesn&apos;t say which, so docker logs, plain .log files and JSON lines stop at{" "}
+          two exact CSV headers and doesn&apos;t say which, so docker logs and JSON lines stop at{" "}
           <code className="font-mono text-pink">missing timestamp column</code>.
         </p>
         <p className="mt-3 max-w-2xl text-lg text-soft">
@@ -183,7 +183,7 @@ export default function Page() {
       <Section id="suggest" kicker="4 · the real fix" title="Two pastes on Codag's side">
         <p>
           The converter is a stopgap. The two layouts may well be deliberate, and naming them in the setup error
-          and the Quickstart is probably a ten-minute change that removes the need for it. These only say which ones are accepted, so nobody has to find
+          and the Quickstart is likely a small change that removes the need for it. These only say which ones are accepted, so nobody has to find
           out by trial and error.
         </p>
         <div className="grid gap-4">
