@@ -1,4 +1,4 @@
-import { readFileSync, statSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { Converter } from "./converter";
 import { RUNS, TRUTH } from "@/lib/runs";
@@ -48,9 +48,7 @@ const SUGGESTED_QUICKSTART = `1. Install the log MCP
    The account CLI (codag setup / status / savings / doctor)
    now installs from https://codag.ai/install-cli.sh`;
 
-const RAW_KB = Math.round(statSync(path.join(process.cwd(), "data/run/postgres-docker.log")).size / 1024);
 const kb = (bytes: number) => `${(bytes / 1024).toFixed(1)} KB`;
-const MAX_READ = Math.max(...RUNS.map((run) => run.toolBytes));
 
 export default function Page() {
 
@@ -72,19 +70,14 @@ export default function Page() {
           Bring the logs you already have <span className="text-accent">to Codag&apos;s log MCP</span>
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-soft">
-          <strong className="text-fg">Problem:</strong> following codag.ai/docs today ends at{" "}
-          <code className="font-mono text-pink">command not found: codag</code>, and setup turns down docker logs,
-          plain .log files and JSON lines with <code className="font-mono text-pink">missing timestamp column</code>{" "}
-          without naming the columns it wants.
+          <strong className="text-fg">Problem:</strong> <code className="font-mono">codag-log-mcp setup</code> opens
+          two exact CSV headers and doesn&apos;t say which, so docker logs, plain .log files and JSON lines stop at{" "}
+          <code className="font-mono text-pink">missing timestamp column</code>.
         </p>
         <p className="mt-3 max-w-2xl text-lg text-soft">
-          <strong className="text-fg">Fix:</strong> this page lists the two headers it opens and converts your
-          logs to one in the browser.
-        </p>
-        <p className="mt-3 max-w-2xl text-lg text-soft">
-          Once the file fits, the engine does its job: on a real {RAW_KB} KB Postgres capture, Claude Code got the
-          incident right in {RUNS.filter((run) => run.correct).length} of {RUNS.length} runs while reading at most{" "}
-          {kb(MAX_READ)} of tool output.
+          <strong className="text-fg">Fix:</strong> this page converts them to one in your browser, and on a real
+          Postgres capture Claude Code + Codag then got the incident right in{" "}
+          {RUNS.filter((run) => run.correct).length} of {RUNS.length} runs.
         </p>
         <div className="mt-8 flex flex-wrap gap-3 text-sm">
           <a href="#convert" className="rounded bg-accent px-4 py-2 font-semibold text-deep hover:bg-accent-light">
@@ -166,8 +159,9 @@ export default function Page() {
           </table>
         </div>
         <p className="text-sm text-muted">
-          &ldquo;Tool output read&rdquo; is the bytes of every tool result the agent received, against {RAW_KB} KB
-          for the raw capture. Full sanitized agent logs, the capture and the scoring script are in{" "}
+          &ldquo;Tool output read&rdquo; is the bytes of every tool result the agent received. There was no
+          no-Codag control arm, so it isn&apos;t a savings figure. Postgres writes a FATAL line plus a DETAIL line
+          per failed login, which is why the converter counts more FATAL rows than failures. Full sanitized agent logs, the capture and the scoring script are in{" "}
           <a className="text-accent underline" href={`${REPO}/tree/main/data/run`}>
             data/run
           </a>
@@ -186,9 +180,10 @@ export default function Page() {
         <Converter />
       </Section>
 
-      <Section id="suggest" kicker="4 · if useful" title="Two pastes that would remove the wall">
+      <Section id="suggest" kicker="4 · the real fix" title="Two pastes on Codag's side">
         <p>
-          The two layouts may well be deliberate. These only say which ones are accepted, so nobody has to find
+          The converter is a stopgap. The two layouts may well be deliberate, and naming them in the setup error
+          and the Quickstart is probably a ten-minute change that removes the need for it. These only say which ones are accepted, so nobody has to find
           out by trial and error.
         </p>
         <div className="grid gap-4">

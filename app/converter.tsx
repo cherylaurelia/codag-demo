@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { convert } from "@/lib/convert";
+import { convert, HEADER } from "@/lib/convert";
 
 const PREVIEW_ROWS = 6;
 
@@ -102,8 +102,15 @@ export function Converter() {
                 .join(" · ")}
             </p>
             <pre className="overflow-x-auto rounded bg-bg p-3 text-soft">
-              {result.csv.split("\n").slice(0, PREVIEW_ROWS + 1).join("\n")}
-              {result.rows > PREVIEW_ROWS && `\n… ${result.rows - PREVIEW_ROWS} more rows`}
+              {[
+                HEADER,
+                ...result.csv
+                  .split("\n")
+                  .slice(1)
+                  .filter((line) => line.split(",")[2] !== "")
+                  .slice(0, PREVIEW_ROWS),
+              ].join("\n")}
+              {`\n… preview shows the first rows with a SeverityText; the download has all ${result.rows}`}
             </pre>
             <div className="flex flex-wrap items-center gap-3">
               <button
