@@ -88,11 +88,18 @@ export function Converter() {
           <div className="space-y-3">
             <p className="text-soft">
               <span className="text-accent">{result.format}</span> · {result.rows} rows · time read as{" "}
-              {result.units.join(", ")} · written as ISO-8601 UTC ·{" "}
+              {result.units.join(", ")} · written as ISO-8601 UTC · {result.blank} blank lines dropped ·{" "}
               <span className={result.skipped.length > 0 ? "text-warn" : ""}>
                 {result.skipped.length} skipped
                 {result.skipped.length > 0 && ` (lines ${result.skipped.slice(0, 8).join(", ")})`}
               </span>
+            </p>
+            <p className="text-muted">
+              SeverityText:{" "}
+              {[...result.levels]
+                .toSorted((a, b) => b[1] - a[1])
+                .map(([level, count]) => `${level || "(none in line)"} ${count}`)
+                .join(" · ")}
             </p>
             <pre className="overflow-x-auto rounded bg-bg p-3 text-soft">
               {result.csv.split("\n").slice(0, PREVIEW_ROWS + 1).join("\n")}

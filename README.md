@@ -30,7 +30,7 @@ Live: https://codag-bring-your-logs.vercel.app
 
 ## Recorded result
 
-Truth: `billing`, 107 failed logins from 14:44:30 to 14:49:01 UTC. One of them (14:44:30) is my own connection test from before the traffic, so the sustained burst is 106 from 14:47:02. All 4 runs named `billing` and gave one of the two readings; 2 set the stray failure aside on their own and said why. Details are in `data/run/results.json`, and the sanitized agent logs are in `data/run/agent-*.jsonl` (init event dropped, paths replaced).
+Truth: `billing`, 107 failed logins from 14:44:30 to 14:49:01 UTC. One of them (14:44:30) is my own connection test from before the traffic, so the sustained burst is 106 from 14:47:02. All 4 runs answered `billing 14:44:30 14:49:01 107`, reading 8–11 KB of tool output each (the raw capture is 282 KB). Details are in `data/run/results.json`, and the sanitized agent logs are in `data/run/agent-*.jsonl` (init event dropped, paths replaced).
 
 ## Run it
 

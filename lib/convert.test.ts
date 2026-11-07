@@ -20,6 +20,14 @@ test("docker --timestamps output becomes Codag's OTel header with ISO UTC times"
   assert.match(lines[2], /^2026-11-07T14:41:12\.311Z,postgres,FATAL,"[^"]*password authentication failed for user ""billing"""$/);
   // DETAIL continues the FATAL event
   assert.match(lines[3], /^2026-11-07T14:41:12\.311Z,postgres,FATAL,/);
+  assert.deepEqual([...result.levels], [["INFO", 1], ["FATAL", 2]]);
+});
+
+test("docker lines with an empty body are dropped and counted, not written as empty rows", () => {
+  const result = convert(`2026-11-07T14:44:23.748258533Z \n${DOCKER}`, "postgres");
+  assert.ok(result);
+  assert.equal(result.blank, 1);
+  assert.equal(result.rows, 3);
 });
 
 test("lines without a docker timestamp are skipped and reported, never guessed", () => {

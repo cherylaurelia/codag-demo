@@ -13,6 +13,8 @@ export interface Converted {
   csv: string;
   rows: number;
   skipped: number[];
+  blank: number;
+  levels: Map<string, number>;
 }
 
 export const HEADER = "Timestamp,ServiceName,SeverityText,Body";
@@ -135,9 +137,16 @@ export function detectFormat(text: string): SourceFormat | null {
 function convertDocker(lines: string[], service: string): Converted {
   const out = [HEADER];
   const skipped: number[] = [];
+  const levels = new Map<string, number>();
+  let blank = 0;
   let previousLevel = "";
   lines.forEach((line, index) => {
-    if (line.trim() === "") return;
+    if (line.trim() === "") {
+      blank += 1;
+
+      return;
+    }
+
     const match = DOCKER_LINE.exec(line);
     const parsed = match === null ? null : parseTime(match[1]);
 
@@ -148,12 +157,28 @@ function convertDocker(lines: string[], service: string): Converted {
     }
 
     const body = match[2];
+
+    if (body.trim() === "") {
+      blank += 1;
+
+      return;
+    }
+
     const level = levelFromText(body, previousLevel);
     previousLevel = level;
+    levels.set(level, (levels.get(level) ?? 0) + 1);
     out.push(row(parsed.time, service, level, body));
   });
 
-  return { format: "docker-timestamps", units: ["iso-8601"], csv: `${out.join("\n")}\n`, rows: out.length - 1, skipped };
+  return {
+    format: "docker-timestamps",
+    units: ["iso-8601"],
+    csv: `${out.join("\n")}\n`,
+    rows: out.length - 1,
+    skipped,
+    blank,
+    levels,
+  };
 }
 
 const timeValue = z.union([z.number().transform(String), z.string()]);
@@ -194,8 +219,15 @@ function convertJsonLines(lines: string[], service: string): Converted {
   const out = [HEADER];
   const skipped: number[] = [];
   const units = new Set<TimeUnit>();
+  const levels = new Map<string, number>();
+  let blank = 0;
   lines.forEach((line, index) => {
-    if (line.trim() === "") return;
+    if (line.trim() === "") {
+      blank += 1;
+
+      return;
+    }
+
     const record = decodeLine(line);
     const rawTime = record === null ? undefined : first(record, TIME_KEYS);
     const parsed = rawTime === undefined ? null : parseTime(rawTime);
@@ -208,10 +240,11 @@ function convertJsonLines(lines: string[], service: string): Converted {
 
     units.add(parsed.unit);
     const level = first(record, LEVEL_KEYS) ?? "";
+    levels.set(level, (levels.get(level) ?? 0) + 1);
     out.push(row(parsed.time, first(record, SERVICE_KEYS) ?? service, level, first(record, MESSAGE_KEYS) ?? line));
   });
 
-  return { format: "json-lines", units: [...units], csv: `${out.join("\n")}\n`, rows: out.length - 1, skipped };
+  return { format: "json-lines", units: [...units], csv: `${out.join("\n")}\n`, rows: out.length - 1, skipped, blank, levels };
 }
 
 export function convert(text: string, service: string): Converted | null {

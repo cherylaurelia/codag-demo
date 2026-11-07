@@ -23,7 +23,7 @@ writeFileSync(output, result.csv);
 
 console.error(
   `${result.format}: ${result.rows} rows, time units ${result.units.join(", ")}, ` +
-    `${result.skipped.length} skipped${result.skipped.length > 0 ? ` (lines ${result.skipped.slice(0, 10).join(", ")})` : ""}`,
+    `${result.blank} blank dropped, ${result.skipped.length} skipped${result.skipped.length > 0 ? ` (lines ${result.skipped.slice(0, 10).join(", ")})` : ""}`,
 );
 
 console.error(`Next: codag-log-mcp setup --log-file ${output}`);

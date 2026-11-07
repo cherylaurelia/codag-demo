@@ -10,7 +10,19 @@ const streamEvent = z.object({
   type: z.string(),
   result: z.string().optional().catch(undefined),
   message: z
-    .object({ content: z.array(z.object({ type: z.string(), name: z.string().optional() }).loose()).catch([]) })
+    .object({
+      content: z
+        .array(
+          z
+            .object({
+              type: z.string(),
+              name: z.string().optional(),
+              content: z.union([z.string(), z.array(z.object({ text: z.string().optional() }).loose())]).optional(),
+            })
+            .loose(),
+        )
+        .catch([]),
+    })
     .optional()
     .catch(undefined),
 });
@@ -27,6 +39,7 @@ for (const file of readdirSync(work).filter((name) => /^run-\d+\.jsonl$/.test(na
   const kept: string[] = [];
   let calls = 0;
   let answer = "";
+  let toolBytes = 0;
 
   for (const line of readFileSync(path.join(work, file), "utf8").split("\n")) {
     if (line === "") continue;
@@ -36,6 +49,14 @@ for (const file of readdirSync(work).filter((name) => /^run-\d+\.jsonl$/.test(na
 
     if (event.type === "assistant") {
       for (const part of event.message?.content ?? []) if (part.type === "tool_use" && part.name?.startsWith("mcp__codag-logs__")) calls += 1;
+    }
+
+    if (event.type === "user") {
+      for (const part of event.message?.content ?? []) {
+        if (part.type !== "tool_result" || part.content === undefined) continue;
+        const text = Array.isArray(part.content) ? part.content.map((item) => item.text ?? "").join("") : part.content;
+        toolBytes += Buffer.byteLength(text);
+      }
     }
 
     if (event.type === "result" && event.result !== undefined) {
@@ -54,7 +75,7 @@ for (const file of readdirSync(work).filter((name) => /^run-\d+\.jsonl$/.test(na
     user === truth.user && first === want.first && last === want.last && Number(count) === want.count;
 
   const reading = matches(truth) ? "every failure" : matches(truth.burst) ? "sustained burst" : "wrong";
-  runs.push({ id: Number(/\d+/.exec(file)?.[0]), calls, answer, correct: reading !== "wrong", reading });
+  runs.push({ id: Number(/\d+/.exec(file)?.[0]), calls, answer, correct: reading !== "wrong", reading, toolBytes });
 }
 
 writeFileSync(path.join(out, "results.json"), `${JSON.stringify(runs, null, 2)}\n`);

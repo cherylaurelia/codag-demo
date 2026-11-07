@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { Converter } from "./converter";
 import { RUNS, TRUTH } from "@/lib/runs";
@@ -48,13 +48,18 @@ const SUGGESTED_QUICKSTART = `1. Install the log MCP
    The account CLI (codag setup / status / savings / doctor)
    now installs from https://codag.ai/install-cli.sh`;
 
+const RAW_KB = Math.round(statSync(path.join(process.cwd(), "data/run/postgres-docker.log")).size / 1024);
+const kb = (bytes: number) => `${(bytes / 1024).toFixed(1)} KB`;
+const MAX_READ = Math.max(...RUNS.map((run) => run.toolBytes));
+
 export default function Page() {
 
   return (
     <main className="mx-auto max-w-5xl px-5 sm:px-8">
       <header className="flex items-center justify-between py-6 font-mono text-sm">
         <span className="font-serif text-2xl text-fg">
-          codag <span className="font-mono text-sm text-muted">log MCP · bring your logs</span>
+          codag <span className="font-mono text-sm text-muted">log MCP</span>
+          <span className="hidden font-mono text-sm text-muted sm:inline"> · bring your logs</span>
         </span>
         <a href={REPO} className="rounded border border-line px-3 py-1.5 text-fg hover:border-accent">
           Repo
@@ -74,8 +79,12 @@ export default function Page() {
         </p>
         <p className="mt-3 max-w-2xl text-lg text-soft">
           <strong className="text-fg">Fix:</strong> this page lists the two headers it opens and converts your
-          logs to one in the browser. The converted Postgres capture below then got Claude Code to the right
-          answer in {RUNS.filter((run) => run.correct).length} of {RUNS.length} runs.
+          logs to one in the browser.
+        </p>
+        <p className="mt-3 max-w-2xl text-lg text-soft">
+          Once the file fits, the engine does its job: on a real {RAW_KB} KB Postgres capture, Claude Code got the
+          incident right in {RUNS.filter((run) => run.correct).length} of {RUNS.length} runs while reading at most{" "}
+          {kb(MAX_READ)} of tool output.
         </p>
         <div className="mt-8 flex flex-wrap gap-3 text-sm">
           <a href="#convert" className="rounded bg-accent px-4 py-2 font-semibold text-deep hover:bg-accent-light">
@@ -102,7 +111,7 @@ export default function Page() {
           that installer ships <code className="font-mono">codag-log-mcp</code> only, and the account CLI moved
           to <code className="font-mono">install-cli.sh</code>. Following the docs in an empty HOME:
         </p>
-        <Terminal title="clean HOME, macOS arm64" body={readRun("docs-break.txt")} tone="bad" />
+        <Terminal title="clean HOME, macOS arm64 · each command run with zsh -c, output unedited" body={readRun("docs-break.txt")} tone="bad" />
       </Section>
 
       <Section id="run" kicker="2 · recorded run" title="A real Postgres incident, before and after converting">
@@ -128,8 +137,7 @@ export default function Page() {
           <code className="font-mono text-fg">
             {TRUTH.burst.first} → {TRUTH.burst.last}, {TRUTH.burst.count}
           </code>
-          ) also counts as right. {RUNS.filter((run) => run.reading === "sustained burst").length} runs set it aside on their
-          own and said why.
+          ) would also count as right; every run gave the full count.
         </p>
         <div className="overflow-x-auto rounded-lg border border-line">
           <table className="w-full min-w-[36rem] text-left font-mono text-xs">
@@ -137,6 +145,7 @@ export default function Page() {
               <tr>
                 <th className="px-4 py-2 font-normal">run</th>
                 <th className="px-4 py-2 font-normal">Codag tool calls</th>
+                <th className="px-4 py-2 font-normal">tool output read</th>
                 <th className="px-4 py-2 font-normal">answer</th>
                 <th className="px-4 py-2 font-normal">matches truth</th>
                 <th className="px-4 py-2 font-normal">reading</th>
@@ -147,6 +156,7 @@ export default function Page() {
                 <tr key={run.id} className="border-t border-line text-soft">
                   <td className="px-4 py-2">{run.id}</td>
                   <td className="px-4 py-2">{run.calls}</td>
+                  <td className="px-4 py-2">{kb(run.toolBytes)}</td>
                   <td className="px-4 py-2">{run.answer}</td>
                   <td className={`px-4 py-2 ${run.correct ? "text-accent" : "text-bad"}`}>{run.correct ? "yes" : "no"}</td>
                   <td className="px-4 py-2">{run.reading}</td>
@@ -156,7 +166,8 @@ export default function Page() {
           </table>
         </div>
         <p className="text-sm text-muted">
-          Full sanitized agent logs, the capture and the scoring script are in{" "}
+          &ldquo;Tool output read&rdquo; is the bytes of every tool result the agent received, against {RAW_KB} KB
+          for the raw capture. Full sanitized agent logs, the capture and the scoring script are in{" "}
           <a className="text-accent underline" href={`${REPO}/tree/main/data/run`}>
             data/run
           </a>

@@ -1,13 +1,10 @@
 Timestamp,ServiceName,SeverityText,Body
 2026-11-07T14:44:23.748Z,postgres,,"The files belonging to this database system will be owned by user ""postgres""."
 2026-11-07T14:44:23.748Z,postgres,,This user must also own the server process.
-2026-11-07T14:44:23.748Z,postgres,,
 2026-11-07T14:44:23.749Z,postgres,,"The database cluster will be initialized with locale ""en_US.utf8""."
 2026-11-07T14:44:23.749Z,postgres,,"The default database encoding has accordingly been set to ""UTF8""."
 2026-11-07T14:44:23.749Z,postgres,,"The default text search configuration will be set to ""english""."
-2026-11-07T14:44:23.749Z,postgres,,
 2026-11-07T14:44:23.749Z,postgres,,Data page checksums are disabled.
-2026-11-07T14:44:23.749Z,postgres,,
 2026-11-07T14:44:23.749Z,postgres,,fixing permissions on existing directory /var/lib/postgresql/data ... ok
 2026-11-07T14:44:23.751Z,postgres,,creating subdirectories ... ok
 2026-11-07T14:44:23.751Z,postgres,,selecting dynamic shared memory implementation ... posix
@@ -20,12 +17,8 @@ Timestamp,ServiceName,SeverityText,Body
 2026-11-07T14:44:25.192Z,postgres,WARN,2026-11-07 14:44:25.192 UTC [35] WARNING:  no usable system locales were found
 2026-11-07T14:44:25.694Z,postgres,,performing post-bootstrap initialization ... ok
 2026-11-07T14:44:25.745Z,postgres,,syncing data to disk ... ok
-2026-11-07T14:44:25.745Z,postgres,,
-2026-11-07T14:44:25.745Z,postgres,,
 2026-11-07T14:44:25.745Z,postgres,,Success. You can now start the database server using:
-2026-11-07T14:44:25.745Z,postgres,,
 2026-11-07T14:44:25.745Z,postgres,,    pg_ctl -D /var/lib/postgresql/data -l logfile start
-2026-11-07T14:44:25.745Z,postgres,,
 2026-11-07T14:44:25.745Z,postgres,,"initdb: warning: enabling ""trust"" authentication for local connections"
 2026-11-07T14:44:25.745Z,postgres,,"initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb."
 2026-11-07T14:44:25.763Z,postgres,INFO,"waiting for server to start....2026-11-07 14:44:25.763 UTC [41] LOG:  starting PostgreSQL 16.15 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit"
@@ -41,10 +34,7 @@ Timestamp,ServiceName,SeverityText,Body
 2026-11-07T14:44:25.862Z,postgres,INFO,2026-11-07 14:44:25.862 UTC [52] LOG:  connection authorized: user=app database=postgres application_name=psql
 2026-11-07T14:44:25.963Z,postgres,,CREATE DATABASE
 2026-11-07T14:44:25.963Z,postgres,INFO,2026-11-07 14:44:25.962 UTC [52] LOG:  disconnection: session time: 0:00:00.100 user=app database=postgres host=[local]
-2026-11-07T14:44:25.963Z,postgres,,
-2026-11-07T14:44:25.963Z,postgres,,
 2026-11-07T14:44:25.963Z,postgres,,/usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
-2026-11-07T14:44:25.963Z,postgres,,
 2026-11-07T14:44:25.963Z,postgres,INFO,waiting for server to shut down....2026-11-07 14:44:25.963 UTC [41] LOG:  received fast shutdown request
 2026-11-07T14:44:25.964Z,postgres,INFO,2026-11-07 14:44:25.964 UTC [41] LOG:  aborting any active transactions
 2026-11-07T14:44:25.965Z,postgres,INFO,"2026-11-07 14:44:25.964 UTC [41] LOG:  background worker ""logical replication launcher"" (PID 47) exited with exit code 1"
@@ -54,9 +44,7 @@ Timestamp,ServiceName,SeverityText,Body
 2026-11-07T14:44:26.043Z,postgres,INFO,2026-11-07 14:44:26.043 UTC [41] LOG:  database system is shut down
 2026-11-07T14:44:26.073Z,postgres,, done
 2026-11-07T14:44:26.073Z,postgres,,server stopped
-2026-11-07T14:44:26.074Z,postgres,,
 2026-11-07T14:44:26.074Z,postgres,,PostgreSQL init process complete; ready for start up.
-2026-11-07T14:44:26.074Z,postgres,,
 2026-11-07T14:44:26.083Z,postgres,INFO,"2026-11-07 14:44:26.083 UTC [1] LOG:  starting PostgreSQL 16.15 on aarch64-unknown-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit"
 2026-11-07T14:44:26.083Z,postgres,INFO,"2026-11-07 14:44:26.083 UTC [1] LOG:  listening on IPv4 address ""0.0.0.0"", port 5432"
 2026-11-07T14:44:26.083Z,postgres,INFO,"2026-11-07 14:44:26.083 UTC [1] LOG:  listening on IPv6 address ""::"", port 5432"
